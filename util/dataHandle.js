@@ -71,13 +71,13 @@ class dataHandle {
       platform: '163',
     }),
 
-    handle163Playlist: ({ copywriter, creator, id, name, coverImgUrl, trackCount, playCount, userId, description, tracks, picUrl }) => ({
+    handle163Playlist: ({ copywriter, creator, id, name, coverImgUrl, trackCount, playCount, userId, description, tracks, trackIds, picUrl }) => ({
       creator: creator ? this.handleMap.handle163Creator(creator) : undefined,
       id,
       userId,
       name,
       cover: coverImgUrl || picUrl,
-      trackCount,
+      trackCount: trackIds ? trackIds.length : trackCount,
       playCount,
       desc: description || copywriter,
       list: tracks ? this.batchHandle(tracks, 'song') : undefined,

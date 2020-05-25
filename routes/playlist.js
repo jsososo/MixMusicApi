@@ -9,20 +9,41 @@ module.exports = {
           url,
           data: req.query,
         });
-        const songIds = result.playlist.trackIds.map((o) => o.id).join(',');
-        const songList = await request({
-          url: 'song/detail',
-          data: {
-            ids: songIds,
+        const trackMap = {};
+        result.playlist.tracks.forEach((s) => {
+          trackMap[s.id] = s;
+        });
+        const reqIds = [[]];
+        let reqIdIndex = 0;
+        const querySong = (ids) => (
+          request({
+            url: 'song/detail',
+            data: { ids },
+          })
+        )
+        result.playlist.trackIds.forEach((s) => {
+          trackMap[s.id] = { ...s, ...(trackMap[s.id] || {}) };
+          reqIds[reqIdIndex].push(s.id);
+          if (reqIds[reqIdIndex].length > 200) {
+            reqIdIndex += 1;
+            reqIds[reqIdIndex] = [];
           }
         })
-        result.playlist.tracks = songList.songs || result.playlist;
-        const data = dataHandle.playlist(result.playlist);
 
-        return res.send({
-          result: 100,
-          data,
-        });
+        Promise.all(reqIds.map((ids) => querySong(ids.join(','))))
+          .then((resArr) => {
+            resArr.forEach(({ songs }) => {
+              songs.forEach((s) => trackMap[s.id] = { ...s, ...(trackMap[s.id] || {}) })
+            })
+
+            result.playlist.tracks = Object.values(trackMap).filter((s) => s.name);
+            const data = dataHandle.playlist(result.playlist);
+            return res.send({
+              result: 100,
+              data,
+            });
+          });
+        break;
       case 'qq':
         url = 'songlist';
         result = await request({
