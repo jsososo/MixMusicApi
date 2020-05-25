@@ -33,6 +33,8 @@ class Request {
 
       obj.headers = this.req.headers;
 
+      console.log('\nrequest url: ', obj.url);
+
       const res = await axios(obj);
 
       return res.data;

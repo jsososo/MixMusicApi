@@ -9,7 +9,16 @@ module.exports = {
           url,
           data: req.query,
         });
+        const songIds = result.playlist.trackIds.map((o) => o.id).join(',');
+        const songList = await request({
+          url: 'song/detail',
+          data: {
+            ids: songIds,
+          }
+        })
+        result.playlist.tracks = songList.songs || result.playlist;
         const data = dataHandle.playlist(result.playlist);
+
         return res.send({
           result: 100,
           data,
