@@ -15,13 +15,9 @@ module.exports = {
         data.type = br;
         break;
       case 'migu':
-        const [a, b] = req.query.id.split('_');
-        data.id = a;
-        data.cid = b;
         break;
     }
 
-    let result;
     const brArr = ['128', '320', 'flac'];
     let resData = {};
     const queryFunc = () => {
@@ -99,12 +95,10 @@ module.exports = {
       case 'migu': {
         let idArr = id.split(','), count = 0;
         Promise.all(idArr.map((v) => {
-          const [a, b] = v.split('_');
           return request({
             trueUrl: `http://127.0.0.1:3600/url`,
             data: {
-              id: a,
-              cid: b,
+              id,
               needPic: 1,
               _p: 'migu',
             },
