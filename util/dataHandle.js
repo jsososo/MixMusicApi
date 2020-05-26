@@ -269,15 +269,15 @@ class dataHandle {
       platform: 'migu',
     }),
 
-    handleMiguPlaylist: ({ creator, id, name, intro, picUrl, songCount, playCount, list }) => ({
+    handleMiguPlaylist: ({ creator, id, name, intro, desc, picUrl, songCount, trackCount, playCount, list }) => ({
       id,
       userId: creator ? creator.id : undefined,
       name,
       creator: this.handleMap.handleMiguCreator(creator),
       cover: picUrl,
-      trackCount: songCount,
+      trackCount: songCount || trackCount,
       playCount,
-      desc: intro,
+      desc: intro || desc,
       list: list ? this.batchHandle(list, 'song') : undefined,
       listId: `migu_${id}`,
       platform: 'migu',

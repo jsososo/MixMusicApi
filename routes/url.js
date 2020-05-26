@@ -15,6 +15,9 @@ module.exports = {
         data.type = br;
         break;
       case 'migu':
+        const [a, b] = req.query.id.split('_');
+        data.id = a;
+        data.cid = b;
         break;
     }
 

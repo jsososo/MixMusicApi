@@ -1,6 +1,6 @@
 module.exports = {
   async ['/']({ req, res, request, dataHandle, platform }) {
-    const { id, cid } = req.query;
+    const { id } = req.query;
 
     let result;
     switch (platform) {
@@ -25,7 +25,7 @@ module.exports = {
       case 'migu':
         result = await request({
           url: 'song',
-          data: { id, cid }
+          data: { id }
         })
         return res.send({
           result: 100,
