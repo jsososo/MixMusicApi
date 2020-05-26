@@ -15,6 +15,7 @@ module.exports = {
         data.type = br;
         break;
       case 'migu':
+        data.type = data.br;
         break;
     }
 
@@ -48,24 +49,20 @@ module.exports = {
             };
             break;
           case 'migu':
-            if (result.result === 100) {
+            if (!result.data) {
               let brIdx = brArr.indexOf(br);
-              let songUrl = '';
-              do {
-                let brKey = br === 'flac' ? 'flac' : `${br}k`;
-                brIdx = brArr.indexOf(br);
-                songUrl = result.data[brKey];
-                resData = {
-                  url: songUrl,
-                  picUrl: result.data.pic,
-                  br: br === 'flac' ? 960000 : br * 1000,
-                };
-                brIdx -= 1;
-                if (brIdx > 0) {
-                  br = brArr[brIdx];
-                }
-              } while (!songUrl && brIdx >= 0);
+              if (brIdx > 0) {
+                br = brArr[brIdx - 1];
+                data.type = br;
+                return queryFunc();
+              } else {
+                resData = {};
+              }
             }
+            resData = {
+              url: result.data,
+              br: br === 'flac' ? 960000 : br * 1000,
+            };
         }
 
         return res.send({
