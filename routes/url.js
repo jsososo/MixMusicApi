@@ -1,3 +1,5 @@
+const hostMap = require('../bin/config').hostMap;
+
 module.exports = {
   async ['/']({ request, req, res, platform }) {
     let { br = '128' } = req.query;
@@ -90,17 +92,16 @@ module.exports = {
         result = await request(`song/urls?id=${id}`);
         return res.send(result);
       case 'migu': {
-        let idArr = id.split(','), count = 0;
-        Promise.all(idArr.map((v) => {
+        let idArr = id.split(',');
+        Promise.all(idArr.map((id) => {
           return request({
-            trueUrl: `http://127.0.0.1:3600/url`,
+            trueUrl: `${hostMap.migu}/url`,
             data: {
               id,
-              needPic: 1,
               _p: 'migu',
             },
             timeout: 1000,
-          }).then((res) => resData[a] = res.data)
+          }).then((res) => resData[id] = res.data)
         })).then(() => {
           res.send({
             result: 100,

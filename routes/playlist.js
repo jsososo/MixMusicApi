@@ -29,14 +29,12 @@ module.exports = {
             reqIds[reqIdIndex] = [];
           }
         })
-
         Promise.all(reqIds.map((ids) => querySong(ids.join(','))))
           .then((resArr) => {
             resArr.forEach(({ songs }) => {
               songs.forEach((s) => trackMap[s.id] = { ...s, ...(trackMap[s.id] || {}) })
             })
-
-            result.playlist.tracks = Object.values(trackMap).filter((s) => s.name);
+            result.playlist.tracks = result.playlist.trackIds.map(s => trackMap[s.id]).filter((s) => s.name);
             const data = dataHandle.playlist(result.playlist);
             return res.send({
               result: 100,
