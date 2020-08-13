@@ -94,7 +94,7 @@ module.exports = {
         if (result.code === 200) {
           return res.send({
             result: 100,
-            data: dataHandle.song(result.recommend),
+            data: dataHandle.song(result.data.dailySongs),
           })
         }
         return res.send({
@@ -130,7 +130,7 @@ module.exports = {
           data: dataHandle.playlist(result.recommend || result.result || []),
         })
       case 'qq':
-        result = await request('recommend/playlist');
+        result = await request('recommend/playlist/u');
         return res.send({
           result: 100,
           data: dataHandle.playlist(result.data.list || []),

@@ -1,3 +1,5 @@
+const port = require('../bin/config').port;
+
 module.exports = {
   async ['/']({ req, res, request, dataHandle, platform }) {
     const { id } = req.query;
@@ -66,4 +68,55 @@ module.exports = {
         })
     }
   },
+
+  // 查找，根据关键词从其他平台获取播放链接
+  async ['/find']({ req, res, request, platform }) {
+    const { list = [] } = req.query;
+
+    const reqFunction = async ({ id, key, duration }) => {
+      try {
+        const _p = {
+          163: 'qq',
+          qq: '163'
+        }[platform] || 'qq';
+        const queryRes = await request({
+          url: 'search',
+          data: {
+            key,
+            pageNo: 1,
+            pageSize: 5,
+            _p,
+          },
+          domain: `http://127.0.0.1:${port}`,
+        });
+        const findSong = (queryRes.data.list || []).find((item) => {
+          if (duration) {
+            return (item.duration <= duration + 3) && (item.duration >= duration - 3)
+          }
+          return true;
+        });
+        if (!findSong) {
+          return [id, ''];
+        }
+        const urlRes = await request({
+          url: 'url',
+          data: { id: findSong.id, _p: findSong.platform },
+          domain: `http://127.0.0.1:${port}`,
+        })
+        return [id, urlRes.data.url];
+      } catch {
+        return [id, ''];
+      }
+    }
+    Promise.all(list.map((obj) => reqFunction(obj)))
+      .then((resArr) => {
+        const data = {};
+        resArr.forEach(([id, url]) => url && (data[id] = url));
+
+        res.send({
+          result: 100,
+          data,
+        })
+      })
+  }
 };

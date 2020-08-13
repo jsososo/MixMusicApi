@@ -60,7 +60,7 @@ class dataHandle {
       desc: description || undefined,
     }),
 
-    handle163Singer: ({ id, name, picUrl, img1v1Url, alias, company, trans, briefDesc, introduction }) => ({
+    handle163Singer: ({ id, name, picUrl, img1v1Url, alias = [], company, trans, briefDesc, introduction }) => ({
       id,
       name,
       picUrl: picUrl || img1v1Url || 'http://p3.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg',
