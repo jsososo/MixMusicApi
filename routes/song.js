@@ -98,25 +98,39 @@ module.exports = {
         if (!findSong) {
           return [id, ''];
         }
-        const urlRes = await request({
-          url: 'url',
-          data: { id: findSong.id, _p: findSong.platform },
-          domain: `http://127.0.0.1:${port}`,
-        })
-        return [id, urlRes.data.url];
+        return [id, findSong.id, findSong.platform];
       } catch {
         return [id, ''];
       }
     }
     Promise.all(list.map((obj) => reqFunction(obj)))
-      .then((resArr) => {
+      .then(async (resArr) => {
         const data = {};
-        resArr.forEach(([id, url]) => url && (data[id] = url));
-
-        res.send({
-          result: 100,
-          data,
+        let fp = '';
+        resArr.forEach(([id, fId, p]) => {
+          if (fId) {
+            data[id] = fId;
+            fp = p;
+          }
+        });
+        const urlRes = await request({
+          url: 'url/batch',
+          data: { id: Object.values(data).join(','), _p: fp },
+          domain: `http://127.0.0.1:${port}`,
+          method: 'get',
+        }).catch(err => {
+          console.log('song/find url res', err.message)
+        });
+        const sendResult = {};
+        Object.keys(data).forEach((k) => {
+          if (urlRes.data[data[k]]) {
+            sendResult[k] = urlRes.data[data[k]];
+          }
         })
+        return res.send({
+          result: 100,
+          data: sendResult,
+        });
       })
   }
 };
