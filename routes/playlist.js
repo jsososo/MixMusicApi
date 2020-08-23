@@ -90,7 +90,10 @@ module.exports = {
     let result;
     switch (platform) {
       case '163':
-        result = await request('recommend/songs');
+        result = await request({
+          url: 'recommend/songs',
+          data: req.query,
+        });
         if (result.code === 200) {
           return res.send({
             result: 100,

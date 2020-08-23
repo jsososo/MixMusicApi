@@ -8,9 +8,16 @@ const Request = require('./util/request');
 const DataHandle = require('./util/dataHandle');
 const config = require('./bin/config');
 const axios = require('axios');
+const jsonFile = require('jsonfile');
 
 const app = express();
-
+jsonFile.readFile('data/findMap.json')
+  .then((res) => {
+    global.findMap = res;
+  }, (err) => {
+    global.findMap = {};
+    jsonFile.writeFile('data/findMap.json', {});
+  });
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

@@ -1,4 +1,5 @@
 const port = require('../bin/config').port;
+const jsonFile = require('jsonfile');
 
 module.exports = {
   async ['/']({ req, res, request, dataHandle, platform }) {
@@ -72,13 +73,18 @@ module.exports = {
   // 查找，根据关键词从其他平台获取播放链接
   async ['/find']({ req, res, request, platform }) {
     const { list = [] } = req.query;
+    const { findMap } = global;
 
     const reqFunction = async ({ id, key, duration }) => {
       try {
         const _p = {
           163: 'qq',
-          qq: '163'
+          qq: '163',
+          migu: 'qq',
         }[platform] || 'qq';
+        if (findMap[id] !== undefined) {
+          return [id, findMap[id], _p];
+        }
         const queryRes = await request({
           url: 'search',
           data: {
@@ -107,12 +113,15 @@ module.exports = {
       .then(async (resArr) => {
         const data = {};
         let fp = '';
+        const { findMap } = global;
         resArr.forEach(([id, fId, p]) => {
           if (fId) {
             data[id] = fId;
             fp = p;
           }
+          findMap[id] = fId || '';
         });
+        jsonFile.writeFile('data/findMap.json', findMap);
         const urlRes = await request({
           url: 'url/batch',
           data: { id: Object.values(data).join(','), _p: fp },
@@ -124,7 +133,11 @@ module.exports = {
         const sendResult = {};
         Object.keys(data).forEach((k) => {
           if (urlRes.data[data[k]]) {
-            sendResult[k] = urlRes.data[data[k]];
+            sendResult[k] = {
+              url: urlRes.data[data[k]],
+              bId: data[k],
+              bPlatform: fp,
+            };
           }
         })
         return res.send({

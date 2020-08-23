@@ -132,6 +132,7 @@ class dataHandle {
                      time_public,
                      vid,
                      url,
+                     belongCD,
                      interval,
                    }) => ({
       name: name || songname,
@@ -142,7 +143,7 @@ class dataHandle {
       ar: this.batchHandle(singer, 'Singer'),
       mvId: mv.vid || vid,
       al: this.handleMap.handleQQAlbum(album),
-      trackNo: cdIdx || index_album,
+      trackNo: belongCD !== undefined ? belongCD : index_album,
       duration: interval,
       publishTime: pubtime ? pubtime * 1000 : moment(time_public).valueOf(),
       platform: 'qq',
