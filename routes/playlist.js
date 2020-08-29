@@ -180,4 +180,27 @@ module.exports = {
         });
     }
   },
+
+  // 心动模式
+  async['/heart']({ req, res, request, dataHandle, platform }) {
+    const { id, pid } = req.query;
+    let resultData;
+    switch (platform) {
+      case '163':
+        const { data } = (await request(`playmode/intelligence/list?id=${id}&pid=${pid}`).catch(() => ({ data: []})))
+        resultData = {
+          result: 100,
+          data: dataHandle.song(data.map(({ songInfo }) => songInfo))
+        }
+        break;
+      default:
+        resultData = {
+          result: 100,
+          data: [],
+        }
+        break;
+    }
+
+    return res.send(resultData);
+  }
 };
