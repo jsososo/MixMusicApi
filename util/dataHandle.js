@@ -4,7 +4,7 @@ class dataHandle {
   constructor(platform) {
     this.platform = platform;
 
-    ['song', 'album', 'singer', 'playlist', 'creator', 'url', 'mv'].forEach((k) => {
+    ['song', 'album', 'singer', 'playlist', 'creator', 'url', 'mv', 'top'].forEach((k) => {
       this[k] = (data) => this.batchHandle(data, k);
     })
   }
@@ -64,7 +64,7 @@ class dataHandle {
       id,
       name,
       picUrl: picUrl || img1v1Url || 'http://p3.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg',
-      alias: alias.length > 0 ? alias : undefined,
+      alias: (alias || []).length > 0 ? alias : undefined,
       company,
       desc: briefDesc || undefined,
       trans: trans || undefined,
@@ -100,14 +100,34 @@ class dataHandle {
       br,
     }),
 
-    handle163Mv: ({ id, cover, name, playCount, desc, artists, briefDesc }) => ({
+    handle163Mv: ({ id, cover, name, playCount, desc, artists, briefDesc, publishTime }) => ({
       id,
       name,
       cover,
       playCount,
+      publishTime: publishTime ? moment(publishTime).valueOf() : undefined,
       desc: desc || briefDesc || undefined,
       ar: this.batchHandle(artists, 'Singer'),
       platform: '163',
+    }),
+
+    handle163Top: ({ name, id, description, coverImgUrl, trackUpdateTime, playCount }) => ({
+      name,
+      id,
+      desc: description,
+      cover: coverImgUrl,
+      updated: trackUpdateTime,
+      playCount,
+      platform: '163',
+    }),
+
+    handleQQTop: ({ topId, label, picUrl, updateTime, listenNum }) => ({
+      name: label,
+      id: topId,
+      cover: picUrl,
+      updated: moment(updateTime).valueOf(),
+      playCount: listenNum,
+      platform: 'qq',
     }),
 
     handleQQSong: ({
@@ -134,6 +154,9 @@ class dataHandle {
                      url,
                      belongCD,
                      interval,
+                     rank,
+                     rankVal,
+                     rankType,
                    }) => ({
       name: name || songname,
       id: songmid || mid,
@@ -149,6 +172,9 @@ class dataHandle {
       platform: 'qq',
       br,
       url,
+      rank,
+      rankVal,
+      rankType,
       qqId: songmid || mid,
       aId: `qq_${songmid || mid}`,
     }),
@@ -229,15 +255,15 @@ class dataHandle {
       platform: 'qq',
     }),
 
-    handleQQMv: ({ mv_id, mv_name, mv_pic_url, singer_list, v_id, publish_date, play_count }) => ({
-      id: mv_id,
-      name: mv_name,
-      cover: mv_pic_url,
-      playCount: play_count,
-      // desc: desc || briefDesc,
-      vid: v_id,
-      publishTime: publish_date ? moment(publish_date).valueOf() : undefined,
-      ar: this.batchHandle(singer_list, 'Singer'),
+    handleQQMv: ({ v_id , name, vid, desc, cover_pic, playcnt, mv_name, mv_pic_url, singer_list, recommend, pubdate, singers, publish_date, play_count }) => ({
+      id: v_id || vid,
+      name: mv_name || name,
+      cover: mv_pic_url || cover_pic,
+      playCount: play_count || playcnt,
+      desc,
+      publishTime: (publish_date || (pubdate * 1000)) ? moment(publish_date || (pubdate * 1000)).valueOf() : undefined,
+      ar: this.batchHandle(singer_list || singers, 'Singer'),
+      platform: 'qq',
     }),
 
     handleMiguSong: ({ name, id, cid, artists, album, mvId, br, url }) => ({
