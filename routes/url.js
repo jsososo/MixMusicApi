@@ -82,7 +82,7 @@ module.exports = {
     let result, resData = {};
     switch (platform) {
       case '163':
-        result = await request(`song/url?id=${id}`);
+        result = await request(`song/url?br=128000&id=${id}`);
         result.data.forEach((o) => o.url && (resData[o.id] = o.url));
         return res.send({
           result: 100,
