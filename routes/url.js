@@ -77,39 +77,40 @@ module.exports = {
     queryFunc();
   },
 
-  async ['/batch']({ req, res, request, platform }) {
+  async ['/batch']({ req, res, request, platform, R }) {
     const { id } = req.query;
     let result, resData = {};
+    R.updateDomain(platform);
     switch (platform) {
       case '163':
         result = await request(`song/url?br=128000&id=${id}`);
         result.data.forEach((o) => o.url && (resData[o.id] = o.url));
-        return res.send({
+        res && res.send({
           result: 100,
           data: resData,
         });
+        return resData
       case 'qq':
         result = await request(`song/urls?id=${id}`);
-        return res.send(result);
+        res && res.send(result);
+        return result.data;
       case 'migu': {
         let idArr = id.split(',');
-        Promise.all(idArr.map((id) => {
-          return request({
+        await Promise.all(idArr.map((id) => request({
             trueUrl: `${hostMap.migu}/url`,
             data: {
               id,
               _p: 'migu',
             },
             timeout: 1000,
-          }).then((res) => resData[id] = res.data)
-        })).then(() => {
-          res.send({
-            result: 100,
-            data: resData,
-          })
-        }, (e) => {
-          console.log('批量获取链接出错', e);
-        });
+          }).then((res) => resData[id] = res.data)))
+          .catch((e) => console.log('批量获取链接出错', e))
+
+        res && res.send({
+          result: 100,
+          data: resData,
+        })
+        return resData;
       }
     }
   }

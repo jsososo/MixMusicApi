@@ -10,6 +10,10 @@ class Request {
     this.res = res;
   }
 
+  updateDomain(platform) {
+    this.domain = hostMap[platform];
+  }
+
   request = async (obj) => {
     try {
       if (typeof obj === 'string') {

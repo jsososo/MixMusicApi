@@ -53,13 +53,15 @@ fs.readdirSync(path.join(__dirname, 'routes')).reverse().forEach(file => {
     req.query.platform = req.query['_p'].toLowerCase();
     const RouterMap = require(`./routes/${filename}`);
     Object.keys(RouterMap).forEach((path) => {
+      const R = new Request({ req, res });
       const func = (req, res, next) => RouterMap[path]({
         req,
         res,
         next,
         dataHandle: new DataHandle(req.query.platform),
         platform: req.query.platform,
-        request: new Request({ req, res }).request,
+        request: R.request,
+        R,
       });
       router.post(path, func);
       router.get(path, func);

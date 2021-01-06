@@ -56,6 +56,7 @@ module.exports = {
       case 'qq':
       case 'migu':
         list = result.data.list;
+        total = result.data.total;
         break;
     }
 
@@ -69,16 +70,19 @@ module.exports = {
       });
       list = songs;
     }
-    return res.send({
+
+    const resData = {
+      list: dataHandle[typeKey](list),
+      pageNo,
+      pageSize,
+      total,
+      key: typeKey,
+      type,
+    }
+    res && res.send({
       result: 100,
-      data: {
-        list: dataHandle[typeKey](list),
-        pageNo,
-        pageSize,
-        total,
-        key: typeKey,
-        type,
-      },
+      data: resData,
     });
+    return resData;
   }
 };

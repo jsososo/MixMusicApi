@@ -1,16 +1,18 @@
 const port = require('../bin/config').port;
 const jsonFile = require('jsonfile');
+const Search = require('./search');
+const Url = require('./url');
 
 module.exports = {
-  async ['/']({ req, res, request, dataHandle, platform }) {
-    const { id } = req.query;
+  async ['/']({req, res, request, dataHandle, platform}) {
+    const {id} = req.query;
 
     let result;
     switch (platform) {
       case '163':
         result = await request({
           url: 'song/detail',
-          data: { ids: id }
+          data: {ids: id}
         });
         return res.send({
           result: 100,
@@ -19,7 +21,7 @@ module.exports = {
       case 'qq':
         result = await request({
           url: 'song',
-          data: { songmid: id },
+          data: {songmid: id},
         });
         return res.send({
           result: 100,
@@ -28,7 +30,7 @@ module.exports = {
       case 'migu':
         result = await request({
           url: 'song',
-          data: { id }
+          data: {id}
         })
         return res.send({
           result: 100,
@@ -37,7 +39,7 @@ module.exports = {
     }
   },
 
-  async ['/record']({ req, res, request, dataHandle, platform }) {
+  async ['/record']({req, res, request, dataHandle, platform}) {
 
     let result;
     switch (platform) {
@@ -61,7 +63,7 @@ module.exports = {
         const list = result.weekData || result.allData;
         return res.send({
           result: 100,
-          data: list.map(({ playCount, score, song }) => ({
+          data: list.map(({playCount, score, song}) => ({
             playCount,
             score,
             song: dataHandle.song(song),
@@ -71,11 +73,11 @@ module.exports = {
   },
 
   // 查找，根据关键词从其他平台获取播放链接
-  async ['/find']({ req, res, request, platform }) {
-    const { list = [] } = req.query;
-    const { findMap } = global;
+  async ['/find']({req, res, request, platform, dataHandle, R}) {
+    const {list = []} = req.query;
+    const {findMap} = global;
 
-    const reqFunction = async ({ id, key, duration }) => {
+    const reqFunction = async ({id, key, duration}) => {
       try {
         const _p = {
           163: 'qq',
@@ -85,16 +87,18 @@ module.exports = {
         if (findMap[id] !== undefined) {
           return [id, findMap[id], _p];
         }
-        const queryRes = await request({
-          url: 'search',
-          data: {
-            key,
-            pageNo: 1,
-            pageSize: 5,
-            _p,
+        const queryRes = await Search["/"]({
+          req: {
+            query: {
+              key,
+              pageNo: 1,
+              pageSize: 5,
+            }
           },
-          domain: `http://127.0.0.1:${port}`,
-        });
+          platform,
+          request,
+          dataHandle,
+        })
         const findSong = (queryRes.data.list || []).find((item) => {
           if (duration) {
             return (item.duration <= duration + 3) && (item.duration >= duration - 3)
@@ -113,7 +117,7 @@ module.exports = {
       .then(async (resArr) => {
         const data = {};
         let fp = '';
-        const { findMap } = global;
+        const {findMap} = global;
         resArr.forEach(([id, fId, p]) => {
           if (fId) {
             data[id] = fId;
@@ -122,19 +126,19 @@ module.exports = {
           findMap[id] = fId || '';
         });
         jsonFile.writeFile('data/findMap.json', findMap);
-        const urlRes = await request({
-          url: 'url/batch',
-          data: { id: Object.values(data).join(','), _p: fp },
-          domain: `http://127.0.0.1:${port}`,
-          method: 'get',
+        const urlRes = await Url["/batch"]({
+          req: {query: {id: Object.values(data).join(',')}},
+          request,
+          platform: fp,
+          R,
         }).catch(err => {
           console.log('song/find url res', err.message)
         });
         const sendResult = {};
         Object.keys(data).forEach((k) => {
-          if (urlRes.data[data[k]]) {
+          if (urlRes[data[k]]) {
             sendResult[k] = {
-              url: urlRes.data[data[k]],
+              url: urlRes[data[k]],
               bId: data[k],
               bPlatform: fp,
             };

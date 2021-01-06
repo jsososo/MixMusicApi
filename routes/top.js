@@ -1,3 +1,5 @@
+const Playlist = require('./playlist');
+
 module.exports = {
   async ['/category']({ res, request, platform, dataHandle }) {
     let result, resData;
@@ -35,14 +37,10 @@ module.exports = {
     let result;
     switch (platform) {
       case '163':
-        return res.send(await request({
-          url: 'playlist',
-          data: {
-            id,
-            _p: '163',
-          },
-          domain: 'http://127.0.0.1:3600',
-        }))
+        return res.send({
+          result: 100,
+          data: await Playlist["/"]({ req, request, dataHandle, platform }),
+        })
       case 'qq':
         result = (await request({
           url: 'top',

@@ -29,32 +29,32 @@ module.exports = {
             reqIds[reqIdIndex] = [];
           }
         })
-        Promise.all(reqIds.map((ids) => querySong(ids.join(','))))
-          .then((resArr) => {
-            resArr.forEach(({ songs }) => {
-              songs.forEach((s) => trackMap[s.id] = { ...s, ...(trackMap[s.id] || {}) })
-            })
-            result.playlist.tracks = result.playlist.trackIds.map(s => trackMap[s.id]).filter((s) => s.name);
-            const data = dataHandle.playlist(result.playlist);
-            return res.send({
-              result: 100,
-              data,
-            });
-          });
-        break;
+        const resArr = await Promise.all(reqIds.map((ids) => querySong(ids.join(','))))
+
+        resArr.forEach(({ songs }) => {
+          songs.forEach((s) => trackMap[s.id] = { ...s, ...(trackMap[s.id] || {}) })
+        })
+        result.playlist.tracks = result.playlist.trackIds.map(s => trackMap[s.id]).filter((s) => s.name);
+        const data = dataHandle.playlist(result.playlist);
+        res && res.send({
+          result: 100,
+          data,
+        });
+        return data;
       case 'qq':
         url = 'songlist';
         result = await request({
           url,
           data: req.query,
         });
-        return res.send({
+        res && res.send({
           result: 100,
           data: {
             // result,
             ...(dataHandle.playlist(result.data)),
           },
         });
+        return resData;
       case 'migu':
         url = 'playlist';
         let totalPage = 1;
@@ -78,10 +78,11 @@ module.exports = {
           } catch (err) {}
           nowPage += 1;
         }
-        return res.send({
+        res && res.send({
           result: 100,
           data: resData,
         })
+        return resData;
     }
   },
 
