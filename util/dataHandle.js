@@ -207,6 +207,7 @@ class dataHandle {
 
       handleQQPlaylist: ({
                            dissid,
+                           disstid,
                            dissname,
                            content_id,
                            cover,
@@ -235,7 +236,7 @@ class dataHandle {
                            creator = creator_info || { nickname: nickname || username, avatarUrl: headurl }
                          }) => ({
         name: dissname || title || diss_name,
-        id: dissid || content_id || tid,
+        id: disstid || content_id || tid,
         creator: this.handleMap.handleQQCreator(creator),
         userId: this.handleMap.handleQQCreator(creator).id,
         cover: imgurl || logo || cover || cover_url_medium || diss_cover,
@@ -245,7 +246,7 @@ class dataHandle {
         playCount: listennum || access_num ||listen_num,
         desc: introduction || desc || undefined,
         list: songlist ? this.batchHandle(songlist, 'song') : undefined,
-        listId: `qq_${dissid || content_id || tid}`,
+        listId: `qq_${disstid || content_id || tid}`,
         platform: 'qq',
       }),
 
