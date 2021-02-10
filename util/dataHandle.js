@@ -192,7 +192,7 @@ class dataHandle {
         aId: `qq_${songmid || mid}`,
       }),
 
-      handleQQComment: ({ avatarurl, nick, rootcommentuin, rootcommentnick, commentid, rootcommentcontent, middlecommentcontent, beRepliedCommentId, time, ispraise, praisenum, content }) => ({
+      handleQQComment: ({ avatarurl, nick, rootcommentuin, rootcommentnick, commentid, rootcommentcontent, middlecommentcontent, beRepliedCommentId, time, ispraise, praisenum }) => ({
         creator: this.handleMap.handleQQCreator({ avatar: avatarurl, nick, uin: rootcommentuin }),
         id: commentid,
         beRepliedId: beRepliedCommentId,
@@ -206,10 +206,11 @@ class dataHandle {
         beReplied: middlecommentcontent ? [
           {
             content: (rootcommentcontent || '').replace(/\\n/g, '<br/>'),
-            user: {
-              avatarUrl: '',
-              userId: rootcommentuin,
-              nickname: (rootcommentnick || '').replace('@', ''),
+            creator: {
+              avatar: '',
+              id: rootcommentuin,
+              nick: (rootcommentnick || '').replace('@', ''),
+              platform: 'qq',
             }
           }
         ] : [],
