@@ -91,6 +91,8 @@ module.exports = {
         break;
       case 'qq':
         result = await request(`singer/desc?singermid=${id}`);
+        result.data = result.data || {};
+        result.data.name = result.data.singername;
         ((result.data.basic && result.data.basic.item) || []).forEach(({ key, value}) => {
           if (key === '中文名') {
             result.data.name = value;

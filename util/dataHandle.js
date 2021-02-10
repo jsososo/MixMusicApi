@@ -4,7 +4,7 @@ class dataHandle {
   constructor(platform) {
     this.platform = platform;
 
-    ['song', 'album', 'singer', 'playlist', 'creator', 'url', 'mv', 'top'].forEach((k) => {
+    ['song', 'album', 'singer', 'playlist', 'creator', 'url', 'mv', 'top', 'comment'].forEach((k) => {
       this[k] = (data) => this.batchHandle(data, k);
     })
   }
@@ -47,6 +47,18 @@ class dataHandle {
         br,
         url,
         aId: `163_${id}`,
+      }),
+
+      handle163Comment: ({ user, beReplied = [], commentId, beRepliedCommentId, time, liked, likedCount, content }) => ({
+        creator: this.handleMap.handle163Creator(user),
+        beReplied: beReplied.map((v) => this.handleMap.handle163Comment(v)),
+        id: commentId,
+        beRepliedId: beRepliedCommentId,
+        time,
+        liked,
+        likedCount,
+        content,
+        platform: '163',
       }),
 
       handle163Album: ({ id, name, picUrl, company, publishTime, description, ar, artists, copyrightId }) => ({
@@ -178,6 +190,30 @@ class dataHandle {
         rankType,
         qqId: songmid || mid,
         aId: `qq_${songmid || mid}`,
+      }),
+
+      handleQQComment: ({ avatarurl, nick, rootcommentuin, rootcommentnick, commentid, rootcommentcontent, middlecommentcontent, beRepliedCommentId, time, ispraise, praisenum, content }) => ({
+        creator: this.handleMap.handleQQCreator({ avatar: avatarurl, nick, uin: rootcommentuin }),
+        id: commentid,
+        beRepliedId: beRepliedCommentId,
+        time: time * 1000,
+        liked: ispraise === undefined ? undefined : !!ispraise,
+        likedCount: praisenum,
+        middlecommentcontent,
+        content: middlecommentcontent ?
+          (middlecommentcontent.map((r) => `回复 ${r.replyednick}：${(r.subcommentcontent || '').replace(/\\n/g, '<br/>')}`).join(' //')) :
+          (rootcommentcontent || '').replace(/\\n/g, '<br/>'),
+        beReplied: middlecommentcontent ? [
+          {
+            content: (rootcommentcontent || '').replace(/\\n/g, '<br/>'),
+            user: {
+              avatarUrl: '',
+              userId: rootcommentuin,
+              nickname: (rootcommentnick || '').replace('@', ''),
+            }
+          }
+        ] : [],
+        platform: 'qq',
       }),
 
       handleQQSinger: ({ id, mid, name, singerID, singerMID, singerName, singerPic, pic, desc, intro, alias, company }) => ({
