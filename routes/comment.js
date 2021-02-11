@@ -87,14 +87,14 @@ module.exports = {
     const { id, commentId, type } = req.query;
     switch (platform) {
       case '163': {
-        const result = await request(`/comment/like?id=${id}&cid=${commentId}&type=${type}`);
+        const result = await request(`comment/like?id=${id}&cid=${commentId}&type=${type}`);
         return res.send({
           result: 100,
           data: result.data
         })
       }
       case 'qq': {
-        const result = await request(`comment/like?id=${id}&type=${type/1 === 1 ? 1 : 2}`);
+        const result = await request(`comment/like?id=${commentId}&type=${type/1 === 1 ? 1 : 2}`);
         return res.send({
           result: 100,
           data: result.data
