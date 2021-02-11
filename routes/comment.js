@@ -87,7 +87,7 @@ module.exports = {
     const { id, commentId, type } = req.query;
     switch (platform) {
       case '163': {
-        const result = await request(`comment/like?id=${id}&cid=${commentId}&type=${type}`);
+        const result = await request(`comment/like?id=${id}&cid=${commentId}&t=${type}&type=0`);
         return res.send({
           result: 100,
           data: result.data
