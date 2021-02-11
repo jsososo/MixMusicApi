@@ -35,6 +35,8 @@ class Request {
       if (obj.method === 'get') {
         obj.url = StringHelper.changeUrlQuery(data, url);
         delete obj.data;
+      } else {
+        obj.url = url;
       }
 
       obj.headers = this.req.headers;

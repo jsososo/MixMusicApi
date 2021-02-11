@@ -192,13 +192,14 @@ class dataHandle {
         aId: `qq_${songmid || mid}`,
       }),
 
-      handleQQComment: ({ avatarurl, nick, rootcommentuin, rootcommentnick, commentid, rootcommentcontent, middlecommentcontent, beRepliedCommentId, time, ispraise, praisenum }) => ({
+      handleQQComment: ({ avatarurl, enable_delete, nick, rootcommentuin, rootcommentnick, commentid, rootcommentcontent, middlecommentcontent, beRepliedCommentId, time, ispraise, praisenum }) => ({
         creator: this.handleMap.handleQQCreator({ avatar: avatarurl, nick, uin: rootcommentuin }),
         id: commentid,
         beRepliedId: beRepliedCommentId,
         time: time * 1000,
         liked: ispraise === undefined ? undefined : !!ispraise,
         likedCount: praisenum,
+        canDelete: enable_delete,
         middlecommentcontent,
         content: middlecommentcontent ?
           (middlecommentcontent.map((r) => `回复 ${r.replyednick}：${(r.subcommentcontent || '').replace(/\\n/g, '<br/>')}`).join(' //')) :

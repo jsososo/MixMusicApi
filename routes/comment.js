@@ -66,7 +66,8 @@ module.exports = {
             id,
             biztype: 1,
             content,
-          }
+          },
+          method: 'post',
         })
         return res.send({
           result: 100,
@@ -106,7 +107,7 @@ module.exports = {
     const { id, commentId } = req.query;
     switch (platform) {
       case '163': {
-        const result = await request(`comment?t=0&id=${id}&commentId=${commentId}`)
+        const result = await request(`comment?t=0&type=0&id=${id}&commentId=${commentId}`)
         return res.send({
           result: 100,
           data: result.data,
