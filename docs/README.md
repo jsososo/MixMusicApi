@@ -77,7 +77,9 @@ npm start
 
 `/song`: 获取歌曲信息
 
-`/record`: 歌曲播放记录（仅支持网易云）
+`/song/record`: 歌曲播放记录（仅支持网易云）
+
+`/song/playlist`: 对歌单中歌曲增删操作
 
 ### 播放链接
 

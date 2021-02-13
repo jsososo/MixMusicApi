@@ -49,7 +49,7 @@ module.exports = {
           result: 400,
           errMsg: '暂不支持',
         });
-      case '163':
+      case '163': {
         result = await request({
           url: 'user/record',
           data: req.query,
@@ -69,6 +69,43 @@ module.exports = {
             song: dataHandle.song(song),
           }))
         })
+      }
+    }
+  },
+
+  // 对歌单 添加/删除 歌曲
+  async ['/playlist']({ req, res, request, platform }) {
+    const { id, type, pId, mid } = req.query;
+    switch (platform) {
+      case 'qq': {
+        const url = type/1 ? 'songlist/add' : 'songlist/add';
+        const result = await request({
+          url,
+          data: {
+            dirid: pId,
+            mid,
+            id,
+          }
+        })
+        return res.send({
+          result: 100,
+          data: result.data,
+        })
+      }
+      case '163': {
+        const result = await request({
+          url: '',
+          data: {
+            tracks: id,
+            pid: pId,
+            op: type/1 ? 'add' : 'del'
+          }
+        })
+        return res.send({
+          result: 100,
+          data: result.data,
+        })
+      }
     }
   },
 
