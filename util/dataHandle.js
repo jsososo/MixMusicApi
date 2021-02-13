@@ -288,9 +288,9 @@ class dataHandle {
         platform: 'qq',
       }),
 
-      handleQQCreator: ({ name, nickname, nick, qq, creator_uin, uin, avatarUrl, avatar, hostuin, hostname }) => ({
+      handleQQCreator: ({ name, nickname, nick, qq, creator_uin, uin, uin_web, avatarUrl, avatar, hostuin, hostname }) => ({
         nick: name || nickname || nick || hostname,
-        id: String(qq || creator_uin || uin || hostuin),
+        id: uin_web || qq || creator_uin || uin || hostuin,
         avatar: avatarUrl || avatar,
         platform: 'qq',
       }),
