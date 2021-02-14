@@ -94,7 +94,7 @@ module.exports = {
       }
       case '163': {
         const result = await request({
-          url: '',
+          url: 'playlist/tracks',
           data: {
             tracks: id,
             pid: pId,
