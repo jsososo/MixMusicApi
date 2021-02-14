@@ -78,7 +78,7 @@ module.exports = {
     const { id, type, pId, mid } = req.query;
     switch (platform) {
       case 'qq': {
-        const url = type/1 ? 'songlist/add' : 'songlist/add';
+        const url = type/1 ? 'songlist/add' : 'songlist/remove';
         const result = await request({
           url,
           data: {
