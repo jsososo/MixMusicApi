@@ -9,6 +9,13 @@ const DataHandle = require('./util/dataHandle');
 const config = require('./bin/config');
 const axios = require('axios');
 const jsonFile = require('jsonfile');
+const User = require('./util/user');
+const Feedback = require('./util/feedback');
+const Version = require('./util/version');
+
+const user = new User();
+const feedback = new Feedback({ user });
+const version = new Version();
 
 const app = express();
 jsonFile.readFile('data/findMap.json')
@@ -62,6 +69,9 @@ fs.readdirSync(path.join(__dirname, 'routes')).reverse().forEach(file => {
         platform: req.query.platform,
         request: R.request,
         R,
+        user,
+        feedback,
+        version,
       });
       router.post(path, func);
       router.get(path, func);
