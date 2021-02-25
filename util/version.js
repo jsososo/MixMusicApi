@@ -60,8 +60,8 @@ class Version {
         newV = version;
       }
       newV && explains.push(explain);
-      if (explain.length >= 3) {
-        explain.push('...');
+      if (explains.length >= 3) {
+        explains.push('...');
         return true;
       }
       return false;
