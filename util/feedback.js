@@ -23,7 +23,7 @@ class Feedback {
     jsonFile.writeFileSync('data/app_feedback.json', this.list, { spaces: 2, EOL: '\r\n' });
   }
 
-  add({ content, replyId, appId, uId, replyUId }) {
+  add({ content, replyId, appId, uId, replyUId, version }) {
     const getRandom = (num) => Number(`${num}`.split('').sort((a, b) => Math.random() - 0.5).join('')).toString(36);
     const randomT = getRandom(new Date().valueOf());
     const randomN = getRandom(Math.round(Math.random() * 99999));
@@ -34,6 +34,7 @@ class Feedback {
       replyUId,
       appId,
       uId,
+      version,
       created: new Date().valueOf(),
     })
     this.write();
