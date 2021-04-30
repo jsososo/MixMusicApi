@@ -12,6 +12,7 @@ module.exports = {
           320: 320000,
           flac: 999000,
         }[br];
+        data._t = new Date().valueOf()
         break;
       case 'qq':
         data.type = br;
