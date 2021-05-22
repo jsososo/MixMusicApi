@@ -1,0 +1,80 @@
+[
+  {
+    "version": "1.2.0",
+    "versionType": "",
+    "explain": "🥤 桌面歌词、本地歌曲优化，性能优化，测试问题修复",
+    "created": "21-05-05"
+  },
+  {
+    "version": "1.1.3",
+    "versionType": "beta",
+    "explain": "🍣支持本地音乐播放",
+    "created": "21-04-21"
+  },
+  {
+    "version": "1.1.2",
+    "versionType": "beta",
+    "explain": "🐟咪咕歌曲替换优化",
+    "created": "21-04-18"
+  },
+  {
+    "version": "1.1.1",
+    "versionType": "beta",
+    "explain": "🦑桌面歌词",
+    "created": "21-04-11"
+  },
+  {
+    "version": "1.1.0",
+    "versionType": "",
+    "explain": "🍍 下载记录终止 & 删除 & 清除缓存 & 记住播放列表 & bug fix",
+    "created": "21-03-23"
+  },
+  {
+    "version": "1.0.2",
+    "versionType": "beta",
+    "explain": "🍐 滚动加载 ",
+    "created": "21-03-05"
+  },
+  {
+    "version": "1.0.1",
+    "versionType": "beta",
+    "explain": "🥙 播放历史、windows新增最小化、关闭按钮",
+    "created": "21.03.01"
+  },
+  {
+    "version": "1.0.0",
+    "versionType": "",
+    "explain": "🍊 第一次正式版",
+    "created": "21-02-24"
+  },
+  {
+    "version": "0.3.0",
+    "versionType": "beta",
+    "explain": "🍄 排行榜 ",
+    "created": "21-02-22"
+  },
+  {
+    "version": "0.2.0",
+    "versionType": "beta",
+    "explain": "🍄 无音源歌曲替换",
+    "created": "21-02-21"
+  },
+  {
+    "version": "0.1.0",
+    "versionType": "beta",
+    "explain": "🎡 歌曲操作、评论、日推等",
+    "created": "21-02-16"
+  },
+  {
+    "version": "0.0.2",
+    "versionType": "alpha",
+    "explain": "🍪 歌手、专辑、歌单页",
+    "created": "21-02-09"
+  },
+  {
+    "version": "0.0.1",
+    "versionType": "alpha",
+    "explain": "🍎 超级先行版！",
+    "created": "21-01-26"
+  }
+]

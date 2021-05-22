@@ -65,7 +65,7 @@ module.exports = {
   async['/version/check']({req, res, version }) {
     res.send({
       result: 100,
-      data: version.check(req.query.version),
+      data: version.check(req.query.version, !!Number(req.query.test || 0)),
     })
   },
 

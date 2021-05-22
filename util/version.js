@@ -46,17 +46,31 @@ class Version {
     v && (v.deleted = true);
   }
 
-  check(v) {
+  check(v, test) {
     const explains = [];
     let newV = '';
+    const compareVersion = (v1, v2) => {
+      const [a1, a2] = [v1.split('.'), v2.split('.')];
+      let [result, i] = [undefined, 0];
+      while (result === undefined && i < a1.length && i < a2.length) {
+        if (Number(a1[i]) > Number(a2[i])) {
+          result = true;
+        }
+        if (Number(a1[i]) < Number(a2[i])) {
+          result = false;
+        }
+        i++
+      }
+      return (result === undefined) ? a1.length >= a2.length : result;
+    }
     this.list.find(({ version, explain, versionType, deleted }) => {
       if (deleted) {
         return false;
       }
-      if (version === v) {
+      if (compareVersion(v, version)) {
         return true;
       }
-      if (!newV && (versionType === 'rc' || versionType === 'ga' || !versionType)) {
+      if (!newV && (test || (versionType === 'rc' || versionType === 'ga' || !versionType))) {
         newV = version;
       }
       newV && explains.push(explain);
