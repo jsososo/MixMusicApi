@@ -1,5 +1,11 @@
 [
   {
+    "version": "1.2.1",
+    "versionType": "beta",
+    "explain": "🍠 开放替换歌曲手动判断，音量淡入淡出，性能模式，ui优化，测试问题修复",
+    "created": "21-05-22"
+  },
+  {
     "version": "1.2.0",
     "versionType": "",
     "explain": "🥤 桌面歌词、本地歌曲优化，性能优化，测试问题修复",
