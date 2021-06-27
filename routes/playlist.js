@@ -203,5 +203,21 @@ module.exports = {
     }
 
     return res.send(resultData);
-  }
+  },
+
+  async['/collect']({ req, res, request, dataHandle, platform}) {
+    const { id, sub } = req.query;
+
+    switch (platform) {
+      case '163':
+        const data = await request(`playlist/subscribe?id=${id}&t=${sub}`)
+        res.send({
+          result: Number(data.code) === 200 ? 100 : 200,
+        });
+        break;
+      case 'qq':
+        res.send(await request(`songlist/collect?id=${id}&op=${Number(sub) ? 1 : 2}`))
+        break;
+    }
+  },
 };

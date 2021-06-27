@@ -1,10 +1,20 @@
+const sourceMap = {
+  msuic: 0,
+  mv: 1,
+  playlist: 2,
+  album: 3,
+  dj: 4,
+}
+
+const getSouce = (source) => sourceMap[source] || 'music';
+
 module.exports = {
   async ['/']({ req, res, dataHandle, request, platform }) {
-    const { id, pageNo = 1, pageSize = 20, hot = 0 } = req.query;
+    const { id, pageNo = 1, pageSize = 20, hot = 0, source = 'music' } = req.query;
     let result, resData = {};
     switch (platform) {
       case '163': {
-        result = await request(`comment/music?offset=${(pageNo - 1) * pageSize}&limit=${pageSize}&id=${id}`).catch(() => ({}));
+        result = await request(`comment/${source}?offset=${(pageNo - 1) * pageSize}&limit=${pageSize}&id=${id}`).catch(() => ({}));
         const { total = 0, comments = [], hotComments = [] } = result;
         resData = {
           list: dataHandle.comment(hot/1 ? hotComments : comments),
@@ -40,14 +50,14 @@ module.exports = {
   },
 
   async ['/send']({ req, res, request, platform }) {
-    const { content, id, commentId } = req.query;
+    const { content, id, commentId, source = 'music' } = req.query;
     switch (platform) {
       case '163': {
         const result = await request({
           url: 'comment',
           data: {
             t: commentId ? 2 : 1,
-            type: 0,
+            source: getSouce(source),
             commentId,
             id,
             content,
@@ -84,10 +94,10 @@ module.exports = {
   },
 
   async ['/like']({ req, res, request, platform }) {
-    const { id, commentId, type } = req.query;
+    const { id, commentId, type, source = 'music' } = req.query;
     switch (platform) {
       case '163': {
-        const result = await request(`comment/like?id=${id}&cid=${commentId}&t=${type}&type=0`);
+        const result = await request(`comment/like?id=${id}&cid=${commentId}&t=${type}&type=${getSouce(source)}`);
         return res.send({
           result: 100,
           data: result.data
@@ -104,10 +114,10 @@ module.exports = {
   },
 
   async ['/del']({ req, res, request, platform }) {
-    const { id, commentId } = req.query;
+    const { id, commentId, source = 'music' } = req.query;
     switch (platform) {
       case '163': {
-        const result = await request(`comment?t=0&type=0&id=${id}&commentId=${commentId}`)
+        const result = await request(`comment?t=0&type=${getSouce(source)}&id=${id}&commentId=${commentId}`)
         return res.send({
           result: 100,
           data: result.data,
