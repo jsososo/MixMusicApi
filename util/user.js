@@ -60,7 +60,7 @@ class User {
 
   bind({ id, qqId, netId }) {
     const { users } = this;
-    const u = users[id];
+    const u = users[id] || { id };
 
     if (qqId) {
       const qqUser = users[qqId];

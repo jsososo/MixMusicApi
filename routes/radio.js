@@ -71,10 +71,21 @@ module.exports = {
     switch (platform) {
       case '163': {
         const data = await request(`dj/program?rid=${id}&limit=1000`).catch(() => ({}));
-        const songs = (data.programs || []).map(({ mainSong }) => mainSong).filter((v) => v);
+        const songs = (data.programs || []).map(({ mainSong, dj, radio, id }) => {
+          dj && (mainSong.artists = [dj]);
+          (mainSong.album && radio && radio.picUrl) && (mainSong.album.picUrl = radio.picUrl);
+          mainSong.radioId = id;
+          return mainSong;
+        }).filter((v) => v);
         res.send({
           result: 100,
-          data: dataHandle.song(songs),
+          data: dataHandle.song(songs).map((v, i) => {
+            v['163_radio'] = true;
+            v.radioId = songs[i].radioId;
+            (v.ar || []).forEach((a) => a['163_dj'] = true);
+            return v;
+          }),
+          a: data,
         })
         break;
       }
@@ -92,7 +103,7 @@ module.exports = {
   async ['/private']({ res, request, platform, dataHandle }) {
     switch (platform) {
       case '163': {
-        const { data } = await request(`personal_fm?t=${Date.now()}`);
+        const { data } = await request(`personal/fm?t=${Date.now()}`);
         res.send({
           result: 100,
           data: dataHandle.song(data),
